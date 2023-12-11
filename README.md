@@ -62,6 +62,13 @@ You can define more LocalAI models and endpoints with `mods --settings`.
 # macOS or Linux
 brew install charmbracelet/tap/mods
 
+# Windows (with Winget)
+winget install mods
+
+# Windows (with Scoop)
+scoop bucket add https://github.com/charmbracelet/scoop-bucket.git
+scoop install mods
+
 # Arch Linux (btw)
 yay -S mods
 
@@ -112,6 +119,13 @@ Mods lets you tune your query with a variety of settings. You can configure
 Mods with `mods --settings` or pass the settings as environment variables
 and flags.
 
+## Dirs
+
+`--dirs`
+
+Prints the local directories used by Mods to store its data.
+Useful if you want to back your conversations up, for example.
+
 #### Model
 
 `-m`, `--model`, `MODS_MODEL`
@@ -146,6 +160,12 @@ Continue from the last response or a given title or SHA1.
 `-l`, `--list`
 
 Lists all saved conversations.
+
+#### Show last
+
+`-S`, `--show-last`
+
+Show the previous conversation.
 
 #### Show
 

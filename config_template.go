@@ -1,7 +1,6 @@
 package main
 
-const configTemplate = `
-# {{ index .Help "model" }}
+const configTemplate = `# {{ index .Help "model" }}
 default-model: gpt-4
 # {{ index .Help "format-text" }}
 format-text: Format the response as markdown without enclosing backticks.
@@ -35,6 +34,7 @@ max-input-chars: 12250
 apis:
   openai:
     base-url: https://api.openai.com/v1
+    api-key: 
     api-key-env: OPENAI_API_KEY
     models:
       gpt-4:
@@ -69,6 +69,7 @@ apis:
     # Set to 'azure-ad' to use Active Directory
     # Azure OpenAI setup: https://learn.microsoft.com/en-us/azure/cognitive-services/openai/how-to/create-resource
     base-url: https://YOUR_RESOURCE_NAME.openai.azure.com
+    api-key: 
     api-key-env: AZURE_OPENAI_KEY
     models:
       gpt-4:

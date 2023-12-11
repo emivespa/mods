@@ -128,7 +128,7 @@ func (m *Mods) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		if msg.content != "" {
 			m.Input = msg.content
 		}
-		if msg.content == "" && m.Config.Prefix == "" && m.Config.Show == "" {
+		if msg.content == "" && m.Config.Prefix == "" && m.Config.Show == "" && !m.Config.ShowLast {
 			return m, m.quit
 		}
 		m.state = requestState
@@ -254,7 +254,7 @@ func (m *Mods) retry(content string, err modsError) tea.Msg {
 }
 
 func (m *Mods) startCompletionCmd(content string) tea.Cmd {
-	if m.Config.Show != "" {
+	if m.Config.Show != "" || m.Config.ShowLast {
 		return m.readFromCache()
 	}
 
@@ -307,7 +307,10 @@ func (m *Mods) startCompletionCmd(content string) tea.Cmd {
 				),
 			}
 		}
-		if api.APIKeyEnv != "" {
+
+		// Uses API key value if found; otherwise searches for env variable.
+		key = api.APIKey
+		if key == "" && api.APIKeyEnv != "" {
 			key = os.Getenv(api.APIKeyEnv)
 		}
 
@@ -319,7 +322,7 @@ func (m *Mods) startCompletionCmd(content string) tea.Cmd {
 			if key == "" {
 				return modsError{
 					reason: fmt.Sprintf(
-						"%s environment variable is required.",
+						"%[1]s required; set environment variable %[1]s or update mods.yaml through --settings.",
 						m.Styles.InlineCode.Render("OPENAI_API_KEY"),
 					),
 					err: fmt.Errorf(
@@ -339,7 +342,7 @@ func (m *Mods) startCompletionCmd(content string) tea.Cmd {
 			if key == "" {
 				return modsError{
 					reason: fmt.Sprintf(
-						"%s environment variable is required.",
+						"%[1]s required; set environment variable %[1]s or update mods.yaml through --settings.",
 						m.Styles.InlineCode.Render("AZURE_OPENAI_KEY"),
 					),
 					err: fmt.Errorf(
@@ -505,14 +508,7 @@ func (m *Mods) findCacheOpsDetails() tea.Cmd {
 		writeID := ordered.First(m.Config.Title, m.Config.Continue)
 		title := writeID
 
-		if continueLast && m.Config.Prefix == "" {
-			return modsError{
-				err:    fmt.Errorf("Missing prompt"),
-				reason: "You must specify a prompt.",
-			}
-		}
-
-		if readID != "" || continueLast {
+		if readID != "" || continueLast || m.Config.ShowLast {
 			found, err := m.findReadID(readID)
 			if err != nil {
 				return modsError{

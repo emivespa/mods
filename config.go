@@ -38,6 +38,7 @@ var help = map[string]string{
 	"fanciness":       "Your desired level of fanciness.",
 	"status-text":     "Text to show while generating.",
 	"settings":        "Open settings in your $EDITOR.",
+	"dirs":            "Print the directories in which mods store its data",
 	"reset-settings":  "Backup your old settings file and reset everything to the defaults.",
 	"continue":        "Continue from the last response or a given save title.",
 	"continue-last":   "Continue from the last response.",
@@ -45,7 +46,8 @@ var help = map[string]string{
 	"title":           "Saves the current conversation with the given title.",
 	"list":            "Lists saved conversations.",
 	"delete":          "Deletes a saved conversation with the given title or ID.",
-	"show":            "Show a saved conversation with the given title or ID",
+	"show":            "Show a saved conversation with the given title or ID.",
+	"show-last":       "Show a the last saved conversation.",
 }
 
 // Model represents the LLM model used in the API call.
@@ -60,6 +62,7 @@ type Model struct {
 // API represents an API endpoint and its models.
 type API struct {
 	Name      string
+	APIKey    string           `yaml:"api-key"`
 	APIKeyEnv string           `yaml:"api-key-env"`
 	BaseURL   string           `yaml:"base-url"`
 	Models    map[string]Model `yaml:"models"`
@@ -109,10 +112,12 @@ type Config struct {
 	Prefix            string
 	Version           bool
 	Settings          bool
+	Dirs              bool
 	SettingsPath      string
 	ContinueLast      bool
 	Continue          string
 	Title             string
+	ShowLast          bool
 	Show              string
 	List              bool
 	Delete            string
